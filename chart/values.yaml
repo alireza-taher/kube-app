@@ -44,9 +44,6 @@ kube-prometheus-stack:
     namespaceOverride: "monitoring"
     # WARNING! Not to be practiced in production
     adminPassword: "admin"
-  alertmanager:
-    # Disable alertmanager since it's local env
-    enabled: true
   prometheus-node-exporter:
     namespaceOverride: "monitoring"
   kube-state-metrics:
