@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-db-init
+  namespace: {{ .Release.Namespace }}
+data:
+  init.sql: |
+    CREATE USER :DB_USER WITH PASSWORD :'DB_PASSWORD';
+    CREATE DATABASE :DB_NAME OWNER :DB_USER;
+    
+    \c :DB_NAME;
+    
+    CREATE TABLE IF NOT EXISTS results (
+      id SERIAL PRIMARY KEY,
+      result TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO :DB_USER;
+    GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO :DB_USER;

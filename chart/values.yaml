@@ -1,0 +1,53 @@
+webapp:
+  image:
+    repository: alireza/webapp
+    tag: latest
+    # Force to use local image
+    pullPolicy: "Never"
+  replicas: 3
+  resources:
+    requests:
+      cpu: 200m
+      memory: 128Mi
+    limits:
+      # Tip: Better to not put limits on CPU in production APIs
+      # As it might cause throttling and performance degradation
+      cpu: 500m
+      memory: 256Mi
+  service:
+    type: NodePort
+    port: 5000
+  domain: "webapp.local"
+  autoscaling:
+    minReplicas: 3
+    maxReplicas: 6
+    targetCPU: 60
+
+postgresql:
+  metrics:
+    enabled: true
+
+cert-manager:
+  crds:
+    # As they are already installed before installing the Chart
+    enabled: false
+  namespace: "cert-manager"
+
+kube-prometheus-stack:
+  namespaceOverride: "monitoring"
+  prometheus:
+    prometheusSpec:
+      # Monitor from other namespaces
+      podMonitorSelectorNilUsesHelmValues: false
+      serviceMonitorSelectorNilUsesHelmValues: false
+  grafana:
+    namespaceOverride: "monitoring"
+    # WARNING! Not to be practiced in production
+    adminPassword: "admin"
+  alertmanager:
+    # Disable alertmanager since it's local env
+    enabled: true
+  prometheus-node-exporter:
+    namespaceOverride: "monitoring"
+  kube-state-metrics:
+    namespaceOverride: "monitoring"

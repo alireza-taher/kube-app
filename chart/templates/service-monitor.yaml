@@ -1,0 +1,33 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nginx-ingress-monitor
+  namespace: ingress-nginx
+spec:
+  jobLabel: nginx-ingress
+  endpoints:
+  - port: prometheus
+    interval: 30s
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+  namespaceSelector:
+    matchNames:
+    - ingress-nginx
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: postgresql-monitor
+  namespace: {{ .Release.Namespace }}
+spec:
+  jobLabel: postgresql
+  endpoints:
+  - port: http-metrics
+    interval: 30s
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgresql
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
