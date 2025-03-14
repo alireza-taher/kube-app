@@ -15,7 +15,7 @@ class CalculateUser(HttpUser):
     def calculate(self):
         api_key = os.environ.get("APIKEY", "")
         headers = {"apikey": api_key}
-        param_value = random.randint(15, 30)
+        param_value = random.randint(20, 50)
 
         self.client.get(
             "/calculate",
