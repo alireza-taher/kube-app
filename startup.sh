@@ -35,7 +35,8 @@ echo 'Please enter root password in order to start LoadBalancer and modify hosts
 sudo -v
 
 # Start Cloud Provider Kind
-sudo bash -c '$(go env GOPATH)/bin/cloud-provider-kind > /dev/null 2>&1 &'
+cloud_provider_kind="$(go env GOPATH)/bin/cloud-provider-kind"
+sudo bash -c "${cloud_provider_kind} > /dev/null 2>&1 &"
 
 # Wait for the IP to be assigned
 echo 'Waiting for external IP to be assigned'
