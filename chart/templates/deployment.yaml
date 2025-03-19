@@ -61,12 +61,12 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 5000
+            port: {{ .Values.webapp.service.port }}
           initialDelaySeconds: 15
           periodSeconds: 20
         readinessProbe:
           httpGet:
             path: /health
-            port: 5000
+            port: {{ .Values.webapp.service.port }}
           initialDelaySeconds: 5
           periodSeconds: 10
