@@ -4,7 +4,7 @@ echo 'Please enter root password in order to stop LoadBalancer and restore origi
 sudo -v
 
 # Stop cloud provider kind
-sudo pkill cloud-provider-kind
+sudo pkill -f cloud-provider-kind
 
 # Remove custom entry from /etc/hosts
 sudo sed -i.backup "/webapp.local/d" /etc/hosts && sudo rm -f /etc/hosts.backup
