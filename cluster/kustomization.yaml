@@ -1,0 +1,56 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Metrics Server (for HPA)
+# Nginx Ingress Controller
+# cert-manager CRDs
+resources:
+- https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+- https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
+- https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.crds.yaml
+
+# Patch Metrics server to skip SSL verification
+# Patch the ingress-nginx-controller Deployment to enable Prometheus metrics
+patches:
+- patch: |-
+    - op: add
+      path: "/spec/template/spec/containers/0/args/-"
+      value: "--kubelet-insecure-tls"
+  target:
+    group: apps
+    kind: Deployment
+    name: metrics-server
+    namespace: kube-system
+    version: v1
+- patch: |-
+    - op: add
+      path: "/spec/ports/-"
+      value:
+        name: "prometheus"
+        port: 10254
+        targetPort: "prometheus"
+  target:
+    kind: Service
+    name: ingress-nginx-controller
+    namespace: ingress-nginx
+    version: v1
+- patch: |-
+    - op: add
+      path: "/spec/template/spec/containers/0/ports/-"
+      value:
+        name: "prometheus"
+        containerPort: 10254
+    - op: add
+      path: "/spec/template/metadata/annotations"
+      value:
+        "prometheus.io/scrape": "true"
+        "prometheus.io/port": "10254"
+    - op: add
+      path: "/spec/template/spec/containers/0/args/-"
+      value: "--enable-metrics"
+  target:
+    group: apps
+    kind: Deployment
+    name: ingress-nginx-controller
+    namespace: ingress-nginx
+    version: v1

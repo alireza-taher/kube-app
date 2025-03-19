@@ -5,7 +5,7 @@ This is a simple Python Flask based Web App that showcases a local kubernetes se
 
 ### Requirements
 - Docker
-- kubectl client
+- kubectl 1.14 or newer
 - Python3.x (with venv)
 - Go
 
